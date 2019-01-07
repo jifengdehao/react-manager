@@ -1,11 +1,12 @@
 import React from 'react'
-import { Card, Form } from 'antd'
+import {Card} from 'antd'
 import axios from '../../axios/index'
 import BaseForm from '../../components/BaseForm'
-export default class Order extends React.Component{
+
+export default class Order extends React.Component {
 
     state = {
-        bikeInfo:{}
+        bikeInfo: {}
     }
 
     map = {}
@@ -13,9 +14,17 @@ export default class Order extends React.Component{
     // 表单封装，通过构建表单对象，在BaseForm中进行统一渲染
     formList = [
         {
-            type: '城市'
-        }, {
-            type: '时间查询'
+            type: 'SELECT',
+            label: '城市',
+            initialValue: '0',
+            field: 'city',
+            placeholder: '请输入城市',
+            width:150,
+            list: [{id: '0', name: '全部'}, {id: '1', name: '北京'}, {id: '3', name: '广州'}]
+        },
+        {
+            type: '时间查询',
+            placeholder: '请输入时间'
         }, {
             type: 'SELECT',
             label: '订单状态',
@@ -28,25 +37,21 @@ export default class Order extends React.Component{
     ]
 
     params = {
-        page:1
+        page: 1
     }
 
     // 列表请求
-    requestList = ()=>{
-        axios.ajax({
-            url:'/map/bike_list',
-            data:{
-                params:this.params
-            }
-        }).then((res)=>{
-            if(res){
-                this.setState({
-                    total_count:res.result.total_count
-                },()=>{
-                    
-                })
+    requestList = () => {
+        axios.http({
+            url: '/map/bike_list',
+            params: this.params
+        }).then((res) => {
+            console.log(res)
+            this.setState({
+                total_count: res.result.total_count
+            }, () => {
                 this.renderMap(res.result);
-            }
+            })
         })
     }
 
@@ -55,8 +60,7 @@ export default class Order extends React.Component{
         this.params = filterParams;
         this.requestList();
     };
-
-    componentDidMount(){
+    componentWillMount() {
         this.requestList();
     }
 
@@ -77,19 +81,19 @@ export default class Order extends React.Component{
             imageSize: new window.BMap.Size(36, 42),
             anchor: new window.BMap.Size(18, 42)
         });
-        
-        var bikeMarkerStart = new window.BMap.Marker(startPoint, { icon: startPointIcon });
+
+        var bikeMarkerStart = new window.BMap.Marker(startPoint, {icon: startPointIcon});
         this.map.addOverlay(bikeMarkerStart);
 
         let endPointIcon = new window.BMap.Icon("/assets/end_point.png", new window.BMap.Size(36, 42), {
             imageSize: new window.BMap.Size(36, 42),
             anchor: new window.BMap.Size(18, 42)
         });
-        var bikeMarkerEnd = new window.BMap.Marker(endPoint, { icon: endPointIcon });
+        var bikeMarkerEnd = new window.BMap.Marker(endPoint, {icon: endPointIcon});
         this.map.addOverlay(bikeMarkerEnd);
 
         let routeList = [];
-        list.forEach((item)=>{
+        list.forEach((item) => {
             let p = item.split(",");
             let point = new window.BMap.Point(p[0], p[1]);
             routeList.push(point);
@@ -126,10 +130,10 @@ export default class Order extends React.Component{
         bikeList.forEach((item) => {
             let p = item.split(",");
             let point = new window.BMap.Point(p[0], p[1]);
-            var bikeMarker = new window.BMap.Marker(point, { icon: bikeIcon });
+            var bikeMarker = new window.BMap.Marker(point, {icon: bikeIcon});
             this.map.addOverlay(bikeMarker);
         })
-        
+
         // 添加地图控件
         this.addMapControl();
     };
@@ -147,15 +151,15 @@ export default class Order extends React.Component{
         // legend.addLegend(map);
     };
 
-    render(){
+    render() {
         return (
             <div>
                 <Card>
                     <BaseForm formList={this.formList} filterSubmit={this.handleFilterSubmit}/>
                 </Card>
-                <Card style={{marginTop:10}}>
+                <Card style={{marginTop: 10}}>
                     <div>共{this.state.total_count}辆车</div>
-                    <div id="container" style={{height:500}}></div>
+                    <div id="container" style={{height: 500}}></div>
                 </Card>
             </div>
         );

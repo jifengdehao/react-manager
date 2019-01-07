@@ -58,8 +58,8 @@ export default {
             return [];
         }
         let options = [];
-        data.map((item, index) => {
-            options.push(<Option value={item.id} key={index}>{item.name}</Option>)
+        options = data.map((item, index) => {
+            return <Option value={item.id} key={index}>{item.name}</Option>
         });
         return options;
     },
@@ -69,7 +69,6 @@ export default {
      * @param {*选中行对象} selectedItem
      */
     updateSelectedItem(selectedRowKeys, selectedRows, selectedIds) {
-        console.log(this)
         if (selectedIds) {
             this.setState({
                 selectedRowKeys,

@@ -24,6 +24,7 @@ export default class RichText extends React.Component{
     }
 
     onEditorChange = (editorContent) => {
+        console.log(editorContent)
         this.setState({
             editorContent,
         });
@@ -36,7 +37,7 @@ export default class RichText extends React.Component{
     };
 
     render(){
-        const { editorContent, editorState } = this.state;
+        const { editorState } = this.state;
         return (
             <div>
                 <Card style={{marginTop:10}}>
